@@ -29,10 +29,12 @@ public class GridCreator : MonoBehaviour
 
         //
         CreateGridStructure();
-
+        InitializeNodeNeighbors();
     }
 
-
+    /// <summary>
+    /// Creates a grid of nodes according to specified size x size
+    /// </summary>
     void CreateGridStructure()
     {
         float nodeSize = NodeOBJ.transform.localScale.x;
@@ -92,4 +94,38 @@ public class GridCreator : MonoBehaviour
         }
 
     }
+
+    /// <summary>
+    /// for each node made in CreateGridStructure, set up its neighbors
+    /// </summary>
+    void InitializeNodeNeighbors()
+    {
+        for (int i = 0; i < NodeParent.childCount; i++)
+        {
+            FindNeighborNodes(NodeParent.GetChild(i).gameObject, NodeOBJ.transform.localScale.x);
+            //break;
+        }
+    }
+
+    /// <summary>
+    /// has the overlap function to do the neighbor assignment. Update function later to use layermask and sort orders
+    /// </summary>
+    void FindNeighborNodes(GameObject curNode, float nodeSize)
+    {
+        Collider []arr= Physics.OverlapBox(curNode.transform.position,new Vector3(nodeSize+0.5f,1f,nodeSize+0.5f),Quaternion.identity);
+        List<GameObject> neighbors=new List<GameObject>();
+
+        foreach (Collider c in arr)
+        {
+            if (c.transform.CompareTag("GridNode") && Vector3.Distance(c.transform.position,curNode.transform.position)>0f)
+            {
+                neighbors.Add(c.gameObject);
+                curNode.GetComponent<GridNode>().neighbours.Add(c.GetComponent<GridNode>());
+                //c.transform.Translate(Vector3.up * 2.5f);
+            }
+        }
+
+        Debug.Log("Central node has "+neighbors.Count+" neighbors.");
+    }
+
 }
