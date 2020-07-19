@@ -1,0 +1,11 @@
+
+XCOM Medieval/Library
+XCOM Medieval/Obj
+XCOM Medieval/Packages
+XCOM Medieval/Logs
+XCOM Medieval/Temp
+XCOM Medieval/.vs
+
+*.csproj
+
+*.sln
