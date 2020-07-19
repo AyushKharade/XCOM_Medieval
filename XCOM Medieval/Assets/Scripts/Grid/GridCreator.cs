@@ -27,73 +27,46 @@ public class GridCreator : MonoBehaviour
             Debug.Log("Grid sizes are incorrect must be atleast larger than 2.");
         #endregion
 
-        //
         CreateGridStructure();
         InitializeNodeNeighbors();
     }
 
-    /// <summary>
-    /// Creates a grid of nodes according to specified size x size
-    /// </summary>
+  /// <summary>
+  /// Creates a Grid structure with specified size. Instantiates node objects and names them so tracking is easier.
+  /// </summary>
     void CreateGridStructure()
     {
+        // use a single nested for loop.
         float nodeSize = NodeOBJ.transform.localScale.x;
         float nodeY_Pos = NodeOBJ.transform.position.y;
-        Vector3 position;
 
-        //instantiate central node.
-        Instantiate(NodeOBJ, NodeParent);
-        // central X-Nodes
-        for (int i = 1; i <= verticalSize_X / 2; i++)
+        float starting_Z_Pos = (nodeSize * horizontalSize_Z / 2) * -1;     // so that grid is centered.
+        int nameCount = 0;
+
+        for (int i = 0; i < horizontalSize_Z; i++)
         {
-            position = new Vector3(i * nodeSize, nodeY_Pos, 0f);
-            Instantiate(NodeOBJ, position, Quaternion.identity, NodeParent);
+            GameObject gb = Instantiate(NodeOBJ, new Vector3(0f, nodeY_Pos, starting_Z_Pos), Quaternion.identity, NodeParent);
+            gb.name = "GridNode" + nameCount;
+            nameCount++;
 
-            position = new Vector3(i * nodeSize * -1, nodeY_Pos, 0f);
-            Instantiate(NodeOBJ, position, Quaternion.identity, NodeParent);
-        }
-
-
-        // instantiate nodes on the Z. [Horizontal]
-        // Positive Side. (+ve on Z)
-        for (int i = 1; i <= horizontalSize_Z / 2; i++)
-        {
-            position = new Vector3(0f, nodeY_Pos, i * nodeSize);
-            Instantiate(NodeOBJ, position, Quaternion.identity, NodeParent);
-
-            // positive Y-nodes
-            for (int j = 1; j <= verticalSize_X / 2; j++)
+            // vertical loop.
+            float starting_X_Pos = (nodeSize * verticalSize_X / 2) * -1;
+            for (int j = 0; j < verticalSize_X; j++)
             {
-                position = new Vector3(j * nodeSize, nodeY_Pos, i*nodeSize);
-                Instantiate(NodeOBJ, position, Quaternion.identity, NodeParent);
-
-                position = new Vector3(j * nodeSize*-1, nodeY_Pos, i * nodeSize);
-                Instantiate(NodeOBJ, position, Quaternion.identity, NodeParent);
+                if (starting_X_Pos != 0f)
+                {
+                    gb = Instantiate(NodeOBJ, new Vector3(starting_X_Pos, nodeY_Pos, starting_Z_Pos), Quaternion.identity, NodeParent);
+                    gb.name = "GridNode" + nameCount;
+                    nameCount++;
+                }
+                starting_X_Pos += nodeSize;
             }
-
-        }
-
-        // negative side
-        for (int i = 1; i <= horizontalSize_Z / 2; i++)
-        {
-            position = new Vector3(0f, nodeY_Pos, i * nodeSize*-1);
-            Instantiate(NodeOBJ, position, Quaternion.identity, NodeParent);
-
-            // negative Y-nodes
-            
-            for (int j = 1; j <= verticalSize_X / 2; j++)
-            {
-                position = new Vector3(j * nodeSize, nodeY_Pos, i * nodeSize*-1);
-                Instantiate(NodeOBJ, position, Quaternion.identity, NodeParent);
-
-                position = new Vector3(j * nodeSize * -1, nodeY_Pos, i * nodeSize*-1);
-                Instantiate(NodeOBJ, position, Quaternion.identity, NodeParent);
-            }
-            
-
+            starting_Z_Pos += nodeSize;
         }
 
     }
+
+
 
     /// <summary>
     /// for each node made in CreateGridStructure, set up its neighbors
@@ -103,7 +76,6 @@ public class GridCreator : MonoBehaviour
         for (int i = 0; i < NodeParent.childCount; i++)
         {
             FindNeighborNodes(NodeParent.GetChild(i).gameObject, NodeOBJ.transform.localScale.x);
-            //break;
         }
     }
 
@@ -121,11 +93,8 @@ public class GridCreator : MonoBehaviour
             {
                 neighbors.Add(c.gameObject);
                 curNode.GetComponent<GridNode>().neighbours.Add(c.GetComponent<GridNode>());
-                //c.transform.Translate(Vector3.up * 2.5f);
             }
         }
-
-        Debug.Log("Central node has "+neighbors.Count+" neighbors.");
     }
 
 }
