@@ -29,6 +29,7 @@ public class GridCreator : MonoBehaviour
 
         CreateGridStructure();
         InitializeNodeNeighbors();
+        CloseRandomNodes(55);
     }
 
   /// <summary>
@@ -43,17 +44,14 @@ public class GridCreator : MonoBehaviour
         float starting_Z_Pos = (nodeSize * horizontalSize_Z / 2) * -1;     // so that grid is centered.
         int nameCount = 0;
 
+        GameObject gb;
+
         for (int i = 0; i < horizontalSize_Z; i++)
         {
-            GameObject gb = Instantiate(NodeOBJ, new Vector3(0f, nodeY_Pos, starting_Z_Pos), Quaternion.identity, NodeParent);
-            gb.name = "GridNode" + nameCount;
-            nameCount++;
-
-            // vertical loop.
             float starting_X_Pos = (nodeSize * verticalSize_X / 2) * -1;
             for (int j = 0; j < verticalSize_X; j++)
             {
-                if (starting_X_Pos != 0f)
+                if (starting_X_Pos != 0f || true)
                 {
                     gb = Instantiate(NodeOBJ, new Vector3(starting_X_Pos, nodeY_Pos, starting_Z_Pos), Quaternion.identity, NodeParent);
                     gb.name = "GridNode" + nameCount;
@@ -97,4 +95,19 @@ public class GridCreator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Closes n random nodes, so path finding can be tested.
+    /// </summary>
+    /// <param name="n">No. of nodes to close.</param>
+    void CloseRandomNodes(int n)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            int r = Random.Range(0, NodeParent.childCount);
+            if (NodeParent.GetChild(r).GetComponent<GridNode>().IsNodeOpen())
+                NodeParent.GetChild(r).GetComponent<GridNode>().ToggleNode();
+            else
+                i--;
+        }
+    }
 }

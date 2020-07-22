@@ -396,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2d14666d7c89f646b2fb170b1cd823e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalSize_Z: 18
+  horizontalSize_Z: 17
   verticalSize_X: 20
   NodeOBJ: {fileID: 77971946790992727, guid: e0d0ce2fd11767543847608184cb3de4, type: 3}
   NodeParent: {fileID: 2110115365}

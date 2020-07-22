@@ -18,14 +18,42 @@ public class GridNode : MonoBehaviour
     [Header("Node Neighbours")]
     public List<GridNode> neighbours = new List<GridNode>();
 
+    [Header("State Colors")]
+    public Material defaultColor;
+    public Material halfCoverColor;
+    public Material closedColor;
 
     public float nodeSize;
 
     void Start()
     {
+
         nodeSize = transform.localScale.x;
         // find and save neighbours
     }
 
-    
+    #region Open/Close Nodes
+    void CloseNode()
+    {
+        nodeState = NodeStatus.Closed;
+        GetComponent<MeshRenderer>().material=closedColor;
+
+    }
+
+    void OpenNode()
+    {
+        nodeState = NodeStatus.Open;
+        GetComponent<MeshRenderer>().material = defaultColor;
+    }
+
+    public void ToggleNode()
+    {
+        if (nodeState == NodeStatus.Open)
+            CloseNode();
+        else
+            OpenNode();
+    }
+
+    public bool IsNodeOpen() { if (nodeState == NodeStatus.Open) return true; else return false; }
+    #endregion
 }
