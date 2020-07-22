@@ -177,6 +177,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: db13462b0b0e3a44a9d4b8fac2968580, type: 3}
+--- !u!4 &31760393 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 422474, guid: db13462b0b0e3a44a9d4b8fac2968580,
+    type: 3}
+  m_PrefabInstance: {fileID: 23642789}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,6 +285,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -351,6 +358,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6f90a72a20201e4289951cc73695e0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 31760393}
+  TargetCamPosition: {x: 0, y: 0, z: 0}
+  freeCam: 1
+  smoothValue: 0.3
+  height: 6
+  xOffset: 5
+  zOffset: -4
+  moveSpeed: 0.3
 --- !u!1 &1964066588
 GameObject:
   m_ObjectHideFlags: 0
@@ -361,6 +388,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1964066589}
   - component: {fileID: 1964066590}
+  - component: {fileID: 1964066591}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -400,6 +428,23 @@ MonoBehaviour:
   verticalSize_X: 20
   NodeOBJ: {fileID: 77971946790992727, guid: e0d0ce2fd11767543847608184cb3de4, type: 3}
   NodeParent: {fileID: 2110115365}
+--- !u!114 &1964066591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1964066588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 783ac60e8ce77e440ac208fed940ab21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartNode: {fileID: 0}
+  EndNode: {fileID: 0}
+  AllNodesParent: {fileID: 2110115365}
+  OpenSet: []
+  PathList: []
 --- !u!1 &2002143183
 GameObject:
   m_ObjectHideFlags: 0

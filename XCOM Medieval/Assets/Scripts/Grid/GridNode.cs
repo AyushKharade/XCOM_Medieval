@@ -23,6 +23,12 @@ public class GridNode : MonoBehaviour
     public Material halfCoverColor;
     public Material closedColor;
 
+    [Header("Pathfinding Variables")]
+    public float gCost;
+    public float hCost;
+    public float fCost;
+    public GameObject Parent;
+
     public float nodeSize;
 
     void Start()
@@ -56,4 +62,14 @@ public class GridNode : MonoBehaviour
 
     public bool IsNodeOpen() { if (nodeState == NodeStatus.Open) return true; else return false; }
     #endregion
+
+    public void InitFCost(Transform start, Transform end)
+    {
+        gCost = Vector3.Distance(start.position, transform.position);
+        hCost = Vector3.Distance(end.position, transform.position);
+        fCost = gCost + fCost;
+    }
+
+    public float GetFCost()
+    { return fCost; }
 }
