@@ -19,6 +19,7 @@ public class CharacterInfo : ScriptableObject
     [Header("Unit Details")]
     public ClassType UnitClass = new ClassType();
     public int health;
+    public int mobility;                  // how far you can go.
     [Range(0, 1f)] public float aim;
     [Range(0, 1f)] public float will;
     public string characterName;

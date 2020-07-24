@@ -86,7 +86,7 @@ public class Character : MonoBehaviour
             else
             {
                 Vector3 moveDir = (pathToFollow[movementPathIndex].position - transform.position).normalized;
-                transform.parent.Translate(moveDir * 3f * Time.deltaTime);
+                transform.parent.Translate(moveDir * 4.5f * Time.deltaTime);
                 OrientCharacter(moveDir);
             }
         }
@@ -126,6 +126,7 @@ public class Character : MonoBehaviour
     public bool HasActionsLeft() { return availableActions > 0; }
     public void ResetActions() { availableActions = 2; actionsUI.text = 2+""; }
     public GameObject GetCurUnitNode() { return currentNode; }
+    public int GetMobility() { return characterProfile.mobility; }
 
     // dynamic data & static profile data reader methods
     public int GetUnitHealth() { return health; }

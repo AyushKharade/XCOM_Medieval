@@ -146,6 +146,7 @@ public class GameplayLoop : MonoBehaviour
                 if (hit.collider.GetComponent<GridNode>().IsNodeOpen())
                 {
                     // see if this node is in range, if yes, enable undercursor and display path.
+
                     hit.collider.GetComponent<GridNode>().underCursor = true;
                     if (movementTargetNode != hit.collider.gameObject)              // update path and target node
                     {
@@ -213,7 +214,9 @@ public class GameplayLoop : MonoBehaviour
     }
 
     #endregion
-
+    /// <summary>
+    /// Init game by placing characters in pod locations.
+    /// </summary>
     void InitializeGame()
     {
         foreach (GameObject gb in PlayerUnitList)
