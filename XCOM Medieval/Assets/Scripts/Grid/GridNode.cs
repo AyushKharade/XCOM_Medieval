@@ -32,11 +32,29 @@ public class GridNode : MonoBehaviour
 
     public float nodeSize;
 
+    // for resetting scale
+    float ogScaleXZ;
+    float ogScaleY;
+    [HideInInspector] public bool underCursor;
+
     void Start()
     {
 
         nodeSize = transform.localScale.x;
+
+        ogScaleXZ = nodeSize;
+        ogScaleY = transform.localScale.y;
+
         // find and save neighbours
+    }
+
+    private void Update()
+    {
+        if (underCursor)
+            SelectionScale();
+        else
+            ResetScale();
+        underCursor = false;
     }
 
     #region Open/Close Nodes
@@ -86,4 +104,15 @@ public class GridNode : MonoBehaviour
 
     public float GetFCost()
     { return fCost; }
+
+    void ResetScale()
+    {
+        if(transform.localScale.x!=ogScaleXZ)
+            transform.localScale = new Vector3(ogScaleXZ, ogScaleY, ogScaleXZ);
+    }
+
+    public void SelectionScale()
+    {
+        transform.localScale = new Vector3(ogScaleXZ + ogScaleXZ * 0.25f, ogScaleY + ogScaleY * 0.25f, ogScaleXZ + ogScaleXZ * 0.25f);
+    }
 }

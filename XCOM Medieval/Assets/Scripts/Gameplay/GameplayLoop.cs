@@ -122,7 +122,13 @@ public class GameplayLoop : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            //Debug.Log("Hit: " + hit.transform.name);
+            if (hit.collider.CompareTag("GridNode"))
+            {
+                if (hit.collider.GetComponent<GridNode>().IsNodeOpen())
+                {
+                    hit.collider.GetComponent<GridNode>().underCursor=true;
+                }
+            }
         }
     }
     #endregion
