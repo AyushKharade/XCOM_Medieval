@@ -93,10 +93,7 @@ public class GridPathfinding : MonoBehaviour
 
             //check if it is the target node
             if (curNode.transform.name == end.transform.name)
-            {
-                Debug.Log("Found end node.");
                 break;
-            }
 
             // if not final node, traverse all neighbours
             foreach (GridNode g in curNode.GetComponent<GridNode>().neighbours)

@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameplayLoop : MonoBehaviour
 {
     bool gameInitialized;
+    bool controlLock;          // No inputs accepted (show action cams & animations)
 
     public List<GameObject> PlayerUnitList = new List<GameObject>();                    // since no of units in a player's team stays constant 
     List<Character> PlayerUnit_ScriptRef = new List<Character>();
@@ -40,7 +41,7 @@ public class GameplayLoop : MonoBehaviour
     void Update()
     {
 
-        if (currentTurn == 1 && gameInitialized)
+        if (currentTurn == 1 && gameInitialized && !controlLock)
         {
             PlayerInputs();
         }
@@ -118,13 +119,21 @@ public class GameplayLoop : MonoBehaviour
     void UnitMovement()
     {
         // check if current selected unit has actions left. If yes, enable raycast movement.
-        if (PlayerUnit_ScriptRef[curUnitSelectedIndex].HasActionsLeft())
+        if (PlayerUnit_ScriptRef[curUnitSelectedIndex].HasActionsLeft() && !controlLock)
         {
             movementStartNode = PlayerUnit_ScriptRef[curUnitSelectedIndex].currentNode;
             RaycastMovement();
+            if (validTarget && Input.GetMouseButtonDown(1))
+            {
+                TravelToTarget();
+            }
         }
     }
 
+    /// <summary>
+    /// If where player is aiming with mouse is a valid target where the current unit can move.
+    /// </summary>
+    bool validTarget;
     void RaycastMovement()
     {
         RaycastHit hit;
@@ -144,19 +153,24 @@ public class GameplayLoop : MonoBehaviour
                         GetPathToTarget();
                     }
                     else
-                    { 
+                    {
                         // nothing ,still aiming at the same node. Make sure to reset while cycling.
                     }
+                    validTarget = true;
                 }
                 else
-                    PathDrawingRef.GetComponent<LineRenderer>().positionCount = 0;      
+                {
+                    PathDrawingRef.GetComponent<LineRenderer>().positionCount = 0;
+                    validTarget = false;
+                }
             }
         }
     }
 
+    List<Transform> path = new List<Transform>();
     void GetPathToTarget()
     {
-        List<Transform> path= PathfinderRef.StartPathfindingRegular(movementStartNode,movementTargetNode);
+        path= PathfinderRef.StartPathfindingRegular(movementStartNode,movementTargetNode);
         //Debug.Log("Path to target has " + path.Count + " nodes.");
         DrawPathOnScreen(path);
     }
@@ -179,6 +193,25 @@ public class GameplayLoop : MonoBehaviour
         pathDrawn = true;
     }
 
+    void ResetDrawnPath() { PathDrawingRef.GetComponent<LineRenderer>().positionCount = 0; }
+
+    void TravelToTarget()
+    {
+        validTarget = false;
+        controlLock = true;
+        //cameraRef.GetComponent<MainCameraScript>().freeCam = false;
+        cameraRef.GetComponent<MainCameraScript>().ResetCamOnTarget();
+        ResetDrawnPath();
+
+        // set character's destination so they will move.
+        PlayerUnit_ScriptRef[curUnitSelectedIndex].MoveUnitToNewLocation(movementTargetNode,path);
+    }
+
+    public void UnitReachedDestination()
+    {
+        controlLock = false;
+    }
+
     #endregion
 
     void InitializeGame()
@@ -186,6 +219,7 @@ public class GameplayLoop : MonoBehaviour
         foreach (GameObject gb in PlayerUnitList)
         {
             PlayerUnit_ScriptRef.Add(gb.transform.GetChild(0).GetComponent<Character>());
+            gb.transform.GetChild(0).GetComponent<Character>().GameDirectorRef = this.gameObject;
         }
 
         

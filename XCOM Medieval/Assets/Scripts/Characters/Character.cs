@@ -15,6 +15,7 @@ public class Character : MonoBehaviour
     int maxHealth;
     public GameObject currentNode;        // keep track of what nodes units are standing on.
     public bool isDead;
+    public bool isMoving;
 
     public enum Team { Player1, Player2, Enemy};           // player 2 incase i make a 1v1 mode.        
     [Header("Teams")]
@@ -22,17 +23,27 @@ public class Character : MonoBehaviour
 
     [Header("Gameplay Data")]
     public int availableActions;
+    List<Transform> movementPath=new List<Transform>();
 
+    // movement variables
+    int movementPathIndex=1;
+    List<Transform> pathToFollow = new List<Transform>();
+
+    #region References
     [Header("UI References")]
     public Transform UI_Parent;
     public Image Health_FG_UI;
     public Text Health_UI;
-
     public Image currentControlUI;
     public Text actionsUI;
     public Text callSignUI;
 
+    [Header("References")]
+    public GameObject GameDirectorRef;
+    Animator animator;
+
     Vector3 camDirRef;
+    #endregion
 
     private void Start()
     {
@@ -46,13 +57,49 @@ public class Character : MonoBehaviour
         currentControlUI.enabled = false;
         callSignUI.enabled = false;
         callSignUI.text = characterProfile.callSign + "";
+
+        //references
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
         // billboard the UI towards Camera
         UI_Parent.LookAt(camDirRef*-1);
+
+        if (isMoving)
+        {
+            if (Vector3.Distance(transform.position, currentNode.transform.position) < 0.1f)
+            {
+                //reached
+                transform.position = currentNode.transform.position;
+                isMoving = false;
+                animator.SetBool("isRunning", false);
+                EndMovement();
+            }
+            else if (Vector3.Distance(transform.position, pathToFollow[movementPathIndex].position) < 0.1f)
+            {
+                // go to next position.
+                transform.position = pathToFollow[movementPathIndex].position;
+                movementPathIndex++;
+            }
+            else
+            {
+                Vector3 moveDir = (pathToFollow[movementPathIndex].position - transform.position).normalized;
+                transform.parent.Translate(moveDir * 3f * Time.deltaTime);
+                OrientCharacter(moveDir);
+            }
+        }
         
+    }
+
+    void OrientCharacter(Vector3 dir)
+    {
+        Quaternion lookDirection;
+
+        //set quaternion to this dir
+        lookDirection = Quaternion.LookRotation(dir, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, 5f);
     }
 
     public void ToggleControlUI()
@@ -85,10 +132,31 @@ public class Character : MonoBehaviour
 
 
     #region Common Methods to all Units:
-    // Actionsc common to all units such as move, overwatch and cover.
-    public void MoveUnit()
+    /// <summary>
+    /// Will move an unit to new target location. Takes care of animations. Control lock will be on until unit reaches target.
+    /// Once target is reached, updates nodes (original node is now open, target node is now closed)
+    /// Calls function on director to let it know the action has been completed.
+    /// </summary>
+    /// <param name="endNode">The target node where the unit is going</param>
+    /// <param name="path">path the unit will follow.</param>
+    public void MoveUnitToNewLocation(GameObject endNode, List<Transform> path)
     {
+        //currentNode.GetComponent<GridNode>().ToggleNodeOccupied();
+        currentNode.GetComponent<GridNode>().ToggleNode();
+        currentNode = endNode;
 
+        // start running.
+        animator.SetBool("isRunning", true);
+        isMoving = true;
+        pathToFollow = path;
+        movementPathIndex = 1;
+    }
+
+    void EndMovement()
+    {
+        currentNode.GetComponent<GridNode>().ToggleNodeOccupied();
+        // call function on director.
+        GameDirectorRef.GetComponent<GameplayLoop>().UnitReachedDestination();
     }
     #endregion
 }
