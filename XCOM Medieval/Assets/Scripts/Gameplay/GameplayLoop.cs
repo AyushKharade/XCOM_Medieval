@@ -17,13 +17,17 @@ public class GameplayLoop : MonoBehaviour
 
     [Header("References")]
     public Transform NodesParentRef;
+    public Transform PathDrawingRef;
     public Transform PlayerPod_Spawn;
     public Transform GameplayCamera;
     MainCameraScript cameraRef;
+    public Transform PathfindingParent;
+    GridPathfinding PathfinderRef;
 
     void Start()
     {
         cameraRef = GameplayCamera.GetComponent<MainCameraScript>();
+        PathfinderRef = PathfindingParent.GetComponent<GridPathfinding>();
 
         alivePlayerUnits = PlayerUnitList.Count;
         currentTurn = 1;
@@ -84,8 +88,11 @@ public class GameplayLoop : MonoBehaviour
         // do the actual cycling.
         // UpdateActionMenu
         cameraRef.SetTarget(PlayerUnitList[curUnitSelectedIndex].transform, true);
-        //PlayerUnitList[curUnitSelectedIndex].transform.GetChild(0).GetComponent<Character>().ToggleControlUI();
         PlayerUnit_ScriptRef[curUnitSelectedIndex].ToggleControlUI();
+
+        // reset start nodes so pathfinding is reset
+        movementStartNode = PlayerUnit_ScriptRef[curUnitSelectedIndex].currentNode;
+        movementTargetNode = null;
 
     }
 
@@ -105,12 +112,15 @@ public class GameplayLoop : MonoBehaviour
 
 
     #region Movement
+
+    GameObject movementStartNode;
+    GameObject movementTargetNode;
     void UnitMovement()
     {
         // check if current selected unit has actions left. If yes, enable raycast movement.
         if (PlayerUnit_ScriptRef[curUnitSelectedIndex].HasActionsLeft())
         {
-            //GameObject targetNode=
+            movementStartNode = PlayerUnit_ScriptRef[curUnitSelectedIndex].currentNode;
             RaycastMovement();
         }
     }
@@ -126,11 +136,49 @@ public class GameplayLoop : MonoBehaviour
             {
                 if (hit.collider.GetComponent<GridNode>().IsNodeOpen())
                 {
-                    hit.collider.GetComponent<GridNode>().underCursor=true;
+                    // see if this node is in range, if yes, enable undercursor and display path.
+                    hit.collider.GetComponent<GridNode>().underCursor = true;
+                    if (movementTargetNode != hit.collider.gameObject)              // update path and target node
+                    {
+                        movementTargetNode = hit.collider.gameObject;
+                        GetPathToTarget();
+                    }
+                    else
+                    { 
+                        // nothing ,still aiming at the same node. Make sure to reset while cycling.
+                    }
                 }
+                else
+                    PathDrawingRef.GetComponent<LineRenderer>().positionCount = 0;      
             }
         }
     }
+
+    void GetPathToTarget()
+    {
+        List<Transform> path= PathfinderRef.StartPathfindingRegular(movementStartNode,movementTargetNode);
+        //Debug.Log("Path to target has " + path.Count + " nodes.");
+        DrawPathOnScreen(path);
+    }
+
+    bool pathDrawn;
+    void DrawPathOnScreen(List<Transform> pathList)
+    {
+        LineRenderer lineRendererRef = PathDrawingRef.GetComponent<LineRenderer>();
+
+        if (pathDrawn)
+        { //clear old path
+            lineRendererRef.positionCount = 0;
+        }
+
+        lineRendererRef.positionCount = pathList.Count;
+        for (int i = 0; i < pathList.Count; i++)
+        {
+            lineRendererRef.SetPosition(i, pathList[i].position);
+        }
+        pathDrawn = true;
+    }
+
     #endregion
 
     void InitializeGame()

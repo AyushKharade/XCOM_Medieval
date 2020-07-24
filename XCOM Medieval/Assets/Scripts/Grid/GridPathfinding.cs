@@ -59,8 +59,11 @@ public class GridPathfinding : MonoBehaviour
     // Pathfinding Function:
     // Returns a list of path transforms from Start node to end node
 
-    List<Transform> StartPathfindingRegular(GameObject start, GameObject end)
+    public List<Transform> StartPathfindingRegular(GameObject start, GameObject end)
     {
+        StartNode = start;
+        EndNode = end;
+
         List<Transform> pathList = new List<Transform>();
 
         OpenSet.Clear();
