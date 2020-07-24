@@ -61,9 +61,16 @@ public class GameplayLoop : MonoBehaviour
             while (true)
             {
                 index = (index + 1) % PlayerUnitList.Count;
-                if (index != curUnitSelectedIndex && !PlayerUnitList[index].transform.GetChild(0).GetComponent<Character>().isDead)
+                if (index != curUnitSelectedIndex && !PlayerUnitList[index].transform.GetChild(0).GetComponent<Character>().isDead
+                    && PlayerUnitList[index].transform.GetChild(0).GetComponent<Character>().HasActionsLeft())
                 {
-                    curUnitSelectedIndex= index;
+                    PlayerUnitList[curUnitSelectedIndex].transform.GetChild(0).GetComponent<Character>().ToggleControlUI();
+                    curUnitSelectedIndex = index;
+                    break;
+                }
+                else if (index == curUnitSelectedIndex)
+                {
+                    Debug.Log("Error in Cycling. Came back to same index.");
                     break;
                 }
             }
@@ -72,6 +79,7 @@ public class GameplayLoop : MonoBehaviour
         // do the actual cycling.
         // UpdateActionMenu
         cameraRef.SetTarget(PlayerUnitList[curUnitSelectedIndex].transform, true);
+        PlayerUnitList[curUnitSelectedIndex].transform.GetChild(0).GetComponent<Character>().ToggleControlUI();
         
     }
 
@@ -105,6 +113,7 @@ public class GameplayLoop : MonoBehaviour
         }
 
         GameplayCamera.GetComponent<MainCameraScript>().SetTarget(PlayerUnitList[0].transform, true);
+        PlayerUnitList[0].transform.GetChild(0).GetComponent<Character>().ToggleControlUI();
         curUnitSelectedIndex = 0;
 
     }

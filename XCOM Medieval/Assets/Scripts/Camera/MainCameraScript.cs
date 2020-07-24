@@ -24,8 +24,11 @@ public class MainCameraScript : MonoBehaviour
     [Header("Movement Offsets")]
     public float moveSpeed;
 
+    Transform CamParent;
+
     private void Start()
     {
+        CamParent = transform.parent;
     }
 
     public void SetTarget(Transform target, bool freeCamAllowed)
@@ -73,6 +76,10 @@ public class MainCameraScript : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))         // reset
             ResetCamOnTarget();
+
+        // rotations
+        //if (Input.GetKey(KeyCode.E))   // rotate Right
+        //    CamParent.Rotate(new Vector3(0, 1, 0));
     }
 
     public void ResetCamOnTarget() { TargetCamPosition = Target.position; }

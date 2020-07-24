@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Character : MonoBehaviour
 {
@@ -22,14 +23,52 @@ public class Character : MonoBehaviour
     [Header("Gameplay Data")]
     public int availableActions;
 
+    [Header("UI References")]
+    public Transform UI_Parent;
+    public Image Health_FG_UI;
+    public Text Health_UI;
+
+    public Image currentControlUI;
+    public Text actionsUI;
+
+    Vector3 camDirRef;
+
     private void Start()
     {
         health = characterProfile.health;
+        maxHealth = health;
+        UpdateHP_UI();
+
+        availableActions = 2;
+
+        camDirRef = Camera.main.transform.position;
+        currentControlUI.enabled = false;
     }
 
+    private void Update()
+    {
+        // billboard the UI towards Camera
+        UI_Parent.LookAt(camDirRef*-1);
+        
+    }
+
+    public void ToggleControlUI()
+    {
+        if (currentControlUI.IsActive())
+            currentControlUI.enabled = false;
+        else
+            currentControlUI.enabled = true;
+    }
+
+    public void UpdateHP_UI()
+    {
+        Health_FG_UI.fillAmount = (health * 1f / maxHealth * 1f);
+        Health_UI.text = health + "/" + maxHealth;
+    }
     // methods
-    public void DeductActions(int n) { availableActions -= n;if (availableActions < 0) availableActions = 0; }
-    public void ResetActions() { availableActions = 2; }
+    public void DeductActions(int n) { availableActions -= n;if (availableActions < 0) availableActions = 0; actionsUI.text = availableActions + ""; }
+    public bool HasActionsLeft() { return availableActions > 0; }
+    public void ResetActions() { availableActions = 2; actionsUI.text = 2+""; }
     public GameObject GetCurUnitNode() { return currentNode; }
 
     // dynamic data & static profile data reader methods

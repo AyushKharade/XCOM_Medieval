@@ -16,6 +16,6 @@ MonoBehaviour:
   health: 8
   aim: 0.732
   will: 0.655
-  characterName: 
+  characterName: Allenran
   meleeResistance: 0.486
   dodge: 0.12
