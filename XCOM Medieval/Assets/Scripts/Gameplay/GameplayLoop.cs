@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameplayLoop : MonoBehaviour
 {
-
+    bool gameInitialized;
 
     public List<GameObject> PlayerUnitList = new List<GameObject>();                    // since no of units in a player's team stays constant 
     List<Character> PlayerUnit_ScriptRef = new List<Character>();
@@ -36,7 +36,7 @@ public class GameplayLoop : MonoBehaviour
     void Update()
     {
 
-        if (currentTurn == 1)
+        if (currentTurn == 1 && gameInitialized)
         {
             PlayerInputs();
         }
@@ -107,8 +107,24 @@ public class GameplayLoop : MonoBehaviour
     #region Movement
     void UnitMovement()
     {
+        // check if current selected unit has actions left. If yes, enable raycast movement.
+        if (PlayerUnit_ScriptRef[curUnitSelectedIndex].HasActionsLeft())
+        {
+            //GameObject targetNode=
+            RaycastMovement();
+        }
     }
 
+    void RaycastMovement()
+    {
+        RaycastHit hit;
+        Ray ray = cameraRef.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            //Debug.Log("Hit: " + hit.transform.name);
+        }
+    }
     #endregion
 
     void InitializeGame()
@@ -136,6 +152,8 @@ public class GameplayLoop : MonoBehaviour
         //PlayerUnitList[0].transform.GetChild(0).GetComponent<Character>().ToggleControlUI();
         PlayerUnit_ScriptRef[0].ToggleControlUI();
         curUnitSelectedIndex = 0;
+
+        gameInitialized = true;
 
     }
 
