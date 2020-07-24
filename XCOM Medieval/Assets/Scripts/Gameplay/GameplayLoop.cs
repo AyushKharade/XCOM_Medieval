@@ -7,6 +7,7 @@ public class GameplayLoop : MonoBehaviour
 
 
     public List<GameObject> PlayerUnitList = new List<GameObject>();                    // since no of units in a player's team stays constant 
+    List<Character> PlayerUnit_ScriptRef = new List<Character>();
     int alivePlayerUnits;
 
     public int curUnitSelectedIndex;
@@ -49,6 +50,9 @@ public class GameplayLoop : MonoBehaviour
             CycleCharacter(1);                     // +1 = increment indices
         else if (Input.GetKeyDown(KeyCode.LeftShift))
             CycleCharacter(-1);                     // -1 = decrement indices
+
+        // Movement loop.
+        UnitMovement();
     }
 
     void CycleCharacter(int direction)
@@ -64,7 +68,8 @@ public class GameplayLoop : MonoBehaviour
                 if (index != curUnitSelectedIndex && !PlayerUnitList[index].transform.GetChild(0).GetComponent<Character>().isDead
                     && PlayerUnitList[index].transform.GetChild(0).GetComponent<Character>().HasActionsLeft())
                 {
-                    PlayerUnitList[curUnitSelectedIndex].transform.GetChild(0).GetComponent<Character>().ToggleControlUI();
+                    //PlayerUnitList[curUnitSelectedIndex].transform.GetChild(0).GetComponent<Character>().ToggleControlUI();
+                    PlayerUnit_ScriptRef[curUnitSelectedIndex].ToggleControlUI();
                     curUnitSelectedIndex = index;
                     break;
                 }
@@ -79,8 +84,9 @@ public class GameplayLoop : MonoBehaviour
         // do the actual cycling.
         // UpdateActionMenu
         cameraRef.SetTarget(PlayerUnitList[curUnitSelectedIndex].transform, true);
-        PlayerUnitList[curUnitSelectedIndex].transform.GetChild(0).GetComponent<Character>().ToggleControlUI();
-        
+        //PlayerUnitList[curUnitSelectedIndex].transform.GetChild(0).GetComponent<Character>().ToggleControlUI();
+        PlayerUnit_ScriptRef[curUnitSelectedIndex].ToggleControlUI();
+
     }
 
     /*
@@ -97,8 +103,22 @@ public class GameplayLoop : MonoBehaviour
     }
     #endregion
 
+
+    #region Movement
+    void UnitMovement()
+    {
+    }
+
+    #endregion
+
     void InitializeGame()
     {
+        foreach (GameObject gb in PlayerUnitList)
+        {
+            PlayerUnit_ScriptRef.Add(gb.transform.GetChild(0).GetComponent<Character>());
+        }
+
+        
         // Spawn Players near the player pod. Toggle pods to occupied
         List<GameObject> arr = FindPlayerPodNodes(PlayerUnitList.Count);
 
@@ -107,13 +127,14 @@ public class GameplayLoop : MonoBehaviour
         foreach (GameObject gb in PlayerUnitList)
         {
             gb.transform.position = arr[index].transform.position;
+            gb.transform.GetChild(0).GetComponent<Character>().currentNode = arr[index];
             arr[index].GetComponent<GridNode>().ToggleNodeOccupied();
-            //arr.RemoveAt(index);
             index++;
         }
 
         GameplayCamera.GetComponent<MainCameraScript>().SetTarget(PlayerUnitList[0].transform, true);
-        PlayerUnitList[0].transform.GetChild(0).GetComponent<Character>().ToggleControlUI();
+        //PlayerUnitList[0].transform.GetChild(0).GetComponent<Character>().ToggleControlUI();
+        PlayerUnit_ScriptRef[0].ToggleControlUI();
         curUnitSelectedIndex = 0;
 
     }

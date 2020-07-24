@@ -30,6 +30,7 @@ public class Character : MonoBehaviour
 
     public Image currentControlUI;
     public Text actionsUI;
+    public Text callSignUI;
 
     Vector3 camDirRef;
 
@@ -43,6 +44,8 @@ public class Character : MonoBehaviour
 
         camDirRef = Camera.main.transform.position;
         currentControlUI.enabled = false;
+        callSignUI.enabled = false;
+        callSignUI.text = characterProfile.callSign + "";
     }
 
     private void Update()
@@ -55,9 +58,15 @@ public class Character : MonoBehaviour
     public void ToggleControlUI()
     {
         if (currentControlUI.IsActive())
+        {
             currentControlUI.enabled = false;
+            callSignUI.enabled = false;
+        }
         else
+        {
             currentControlUI.enabled = true;
+            callSignUI.enabled = true;
+        }
     }
 
     public void UpdateHP_UI()

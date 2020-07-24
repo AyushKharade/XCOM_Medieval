@@ -17,5 +17,6 @@ MonoBehaviour:
   aim: 0.732
   will: 0.655
   characterName: Jeff
+  callSign: Hogwash
   meleeResistance: 0.486
   dodge: 0.12

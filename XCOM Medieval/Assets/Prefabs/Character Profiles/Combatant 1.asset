@@ -17,5 +17,6 @@ MonoBehaviour:
   aim: 0.697
   will: 0.606
   characterName: William
+  callSign: Flame
   meleeResistance: 0.486
   dodge: 0.12
