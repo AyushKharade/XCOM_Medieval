@@ -7,6 +7,9 @@ public class GameplayLoop : MonoBehaviour
 
 
     public List<GameObject> PlayerUnitList = new List<GameObject>();                    // since no of units in a player's team stays constant 
+    int alivePlayerUnits;
+
+    public int curUnitSelectedIndex;
                                                                                         //(except temporary mind controlled units if that is implemented.) 
     int turnCount;                                  // just a counter if needed
     [Range(1,2)]public int currentTurn;             // team 1 or team 2
@@ -15,9 +18,14 @@ public class GameplayLoop : MonoBehaviour
     public Transform NodesParentRef;
     public Transform PlayerPod_Spawn;
     public Transform GameplayCamera;
+    MainCameraScript cameraRef;
 
     void Start()
     {
+        cameraRef = GameplayCamera.GetComponent<MainCameraScript>();
+
+        alivePlayerUnits = PlayerUnitList.Count;
+        currentTurn = 1;
         if (PlayerUnitList.Count > 0)
             Invoke("InitializeGame",0.3f);
         else
@@ -26,8 +34,60 @@ public class GameplayLoop : MonoBehaviour
 
     void Update()
     {
+
+        if (currentTurn == 1)
+        {
+            PlayerInputs();
+        }
+    }
+
+    #region Player inputs
+    void PlayerInputs()
+    {
+        // change controls
+        if (Input.GetKeyDown(KeyCode.Tab))
+            CycleCharacter(1);                     // +1 = increment indices
+        else if (Input.GetKeyDown(KeyCode.LeftShift))
+            CycleCharacter(-1);                     // -1 = decrement indices
+    }
+
+    void CycleCharacter(int direction)
+    {
+        if (alivePlayerUnits > 1)
+        {
+            // get next index that has an alive unit, if same as current unit, dont do anything.
+            // current only cycle on the right side
+            int index = curUnitSelectedIndex;
+            while (true)
+            {
+                index = (index + 1) % PlayerUnitList.Count;
+                if (index != curUnitSelectedIndex && !PlayerUnitList[index].transform.GetChild(0).GetComponent<Character>().isDead)
+                {
+                    curUnitSelectedIndex= index;
+                    break;
+                }
+            }
+        }
+
+        // do the actual cycling.
+        // UpdateActionMenu
+        cameraRef.SetTarget(PlayerUnitList[curUnitSelectedIndex].transform, true);
         
     }
+
+    /*
+    int GetNextAliveUnit(int direction)
+    {
+        int index = curUnitSelectedIndex + direction;       // from here check n-1 times for the next index.
+    }
+    */
+
+    int Modulus(int i, int j) // i%j
+    {
+        if (i > 0) return i % j;
+        else return j + ((i*-1)%j);
+    }
+    #endregion
 
     void InitializeGame()
     {
@@ -45,6 +105,8 @@ public class GameplayLoop : MonoBehaviour
         }
 
         GameplayCamera.GetComponent<MainCameraScript>().SetTarget(PlayerUnitList[0].transform, true);
+        curUnitSelectedIndex = 0;
+
     }
 
     List<GameObject> FindPlayerPodNodes(int noOfPlayers)

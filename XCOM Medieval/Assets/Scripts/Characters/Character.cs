@@ -13,6 +13,7 @@ public class Character : MonoBehaviour
     public int health;
     int maxHealth;
     public GameObject currentNode;        // keep track of what nodes units are standing on.
+    public bool isDead;
 
     public enum Team { Player1, Player2, Enemy};           // player 2 incase i make a 1v1 mode.        
     [Header("Teams")]
@@ -34,4 +35,12 @@ public class Character : MonoBehaviour
     // dynamic data & static profile data reader methods
     public int GetUnitHealth() { return health; }
 
+
+    #region Common Methods to all Units:
+    // Actionsc common to all units such as move, overwatch and cover.
+    public void MoveUnit()
+    {
+
+    }
+    #endregion
 }

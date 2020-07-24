@@ -36,6 +36,8 @@ public class MainCameraScript : MonoBehaviour
             freeCam = true;
         else
             freeCam = false;
+
+        ResetCamOnTarget();
     }
 
     private void Update()
