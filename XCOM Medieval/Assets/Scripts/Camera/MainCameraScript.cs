@@ -26,7 +26,16 @@ public class MainCameraScript : MonoBehaviour
 
     private void Start()
     {
+    }
+
+    public void SetTarget(Transform target, bool freeCamAllowed)
+    {
+        Target = target;
         TargetCamPosition = Target.position;
+        if (freeCamAllowed)
+            freeCam = true;
+        else
+            freeCam = false;
     }
 
     private void Update()
@@ -61,6 +70,8 @@ public class MainCameraScript : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.R))         // reset
-            TargetCamPosition = Target.position;
+            ResetCamOnTarget();
     }
+
+    public void ResetCamOnTarget() { TargetCamPosition = Target.position; }
 }

@@ -20,6 +20,7 @@ public class GridNode : MonoBehaviour
 
     [Header("State Colors")]
     public Material defaultColor;
+    public Material occupiedColor;
     public Material halfCoverColor;
     public Material closedColor;
 
@@ -43,7 +44,14 @@ public class GridNode : MonoBehaviour
     {
         nodeState = NodeStatus.Closed;
         GetComponent<MeshRenderer>().material=closedColor;
+    }
 
+    /// <summary>
+    /// Someone is standing on it.
+    /// </summary>
+    void OccupyNode()
+    {
+        nodeState = NodeStatus.Closed;
     }
 
     void OpenNode()
@@ -58,6 +66,12 @@ public class GridNode : MonoBehaviour
             CloseNode();
         else
             OpenNode();
+    }
+
+    public void ToggleNodeOccupied()
+    {
+        OccupyNode();
+        GetComponent<MeshRenderer>().material = occupiedColor;
     }
 
     public bool IsNodeOpen() { if (nodeState == NodeStatus.Open) return true; else return false; }

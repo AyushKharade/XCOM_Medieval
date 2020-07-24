@@ -109,6 +109,11 @@ MonoBehaviour:
   nodeCover: 2
   neighbours: []
   defaultColor: {fileID: 2100000, guid: 0986d7a06e316294fa0112edcbd443be, type: 2}
+  occupiedColor: {fileID: 2100000, guid: 07a5244d61ebd4246ad6529711f2b079, type: 2}
   halfCoverColor: {fileID: 2100000, guid: 9d53f101ede06024bb992110acbb0d1f, type: 2}
   closedColor: {fileID: 2100000, guid: c75a2eebe5ab9b14daf9afd0fdbce36f, type: 2}
+  gCost: 0
+  hCost: 0
+  fCost: 0
+  Parent: {fileID: 0}
   nodeSize: 0

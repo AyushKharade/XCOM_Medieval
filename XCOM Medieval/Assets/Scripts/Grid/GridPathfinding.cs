@@ -36,7 +36,7 @@ public class GridPathfinding : MonoBehaviour
             {
                 foundPath = true;
                 PathList= StartPathfindingRegular(StartNode,EndNode);
-                DrawPath();
+                DrawPath(50);
             }
             else
                 Debug.Log("Starting node or ending node not defined!!");
@@ -74,6 +74,7 @@ public class GridPathfinding : MonoBehaviour
             // check for any other nodes having smaller cost that this
             foreach (GameObject g in OpenSet)
             {
+                
                 if (g.GetComponent<GridNode>().GetFCost() < curNode.GetComponent<GridNode>().GetFCost() && g.transform.name != curNode.transform.name
                     &&
                     (g.GetComponent<GridNode>().hCost < curNode.GetComponent<GridNode>().hCost))
@@ -98,7 +99,7 @@ public class GridPathfinding : MonoBehaviour
             foreach (GridNode g in curNode.GetComponent<GridNode>().neighbours)
             {
                 GameObject nb = g.gameObject;
-                if (!ClosedSet.Contains(nb))        // skip closed list neighbours
+                if (!ClosedSet.Contains(nb) && g.IsNodeOpen())        // skip closed list neighbours && not-traversable nodes
                 {
                     // find cost of moving to neighbour
                     float moveCost = curNode.GetComponent<GridNode>().gCost + Vector3.Distance(curNode.transform.position, nb.transform.position);
@@ -138,11 +139,11 @@ public class GridPathfinding : MonoBehaviour
 
     }
 
-    void DrawPath()
+    void DrawPath(float time)
     {
         for (int i = 0; i < PathList.Count - 1; i++)
         {
-            Debug.DrawLine(PathList[i].position,PathList[i+1].position,Color.red,15f);
+            Debug.DrawLine(PathList[i].position,PathList[i+1].position,Color.red,time);
         }
     }
     //###############################################################################
