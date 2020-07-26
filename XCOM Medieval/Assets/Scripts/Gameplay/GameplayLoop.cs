@@ -152,6 +152,7 @@ public class GameplayLoop : MonoBehaviour
                     {
                         movementTargetNode = hit.collider.gameObject;
                         GetPathToTarget();
+                        DrawMobilityPath();
                     }
                     else
                     {
@@ -211,6 +212,26 @@ public class GameplayLoop : MonoBehaviour
     {
         controlLock = false;
         ResetDrawnPath();
+
+    }
+
+
+    /// <summary>
+    /// A temporary function to see what path is taken by the mobility path finder function. (ignores all closed nodes)
+    /// </summary>
+    public Transform mobilityPathDrawerRef;
+    void DrawMobilityPath()
+    {
+        List<Transform> mobilityPath = PathfinderRef.Pathfind_Walkable(movementStartNode,movementTargetNode,10);
+        // draw this
+        LineRenderer mobilityLineRenderer= mobilityPathDrawerRef.GetComponent<LineRenderer>();
+        mobilityLineRenderer.positionCount = 0;
+
+        mobilityLineRenderer.positionCount = mobilityPath.Count;
+        for (int i = 0; i < mobilityPath.Count; i++)
+        {
+            mobilityLineRenderer.SetPosition(i, mobilityPath[i].position);
+        }
 
     }
 

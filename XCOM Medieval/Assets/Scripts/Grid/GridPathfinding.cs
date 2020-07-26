@@ -156,7 +156,8 @@ public class GridPathfinding : MonoBehaviour
     /// <param name="mobility">The mobility stat of the character</param>
     /// <param name="actionsLeft">No. of actions the character has left.</param>
     /// <returns>Returns int: 0 = not reacheable, 1 = costs 1 action, 2=costs 2 action (Dash).</returns>
-    public int Pathfind_Walkable(GameObject start, GameObject end, int mobility)
+    //public int Pathfind_Walkable(GameObject start, GameObject end, int mobility)
+    public List<Transform> Pathfind_Walkable(GameObject start, GameObject end, int mobility)
     {
         StartNode = start;
         EndNode = end;
@@ -226,7 +227,8 @@ public class GridPathfinding : MonoBehaviour
         }
 
         pathList.Reverse();
-
+        return pathList;
+        /*
         // ############################## Calculate if you can move here. ##########################
 
         if (pathList.Count == 0)
@@ -250,8 +252,10 @@ public class GridPathfinding : MonoBehaviour
             return 1;
         else
             return 2;
+            */
     }
 
     //###############################################################################
     #endregion
+
 }
