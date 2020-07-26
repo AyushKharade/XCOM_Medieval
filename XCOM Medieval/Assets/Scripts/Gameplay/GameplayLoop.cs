@@ -146,19 +146,26 @@ public class GameplayLoop : MonoBehaviour
                 if (hit.collider.GetComponent<GridNode>().IsNodeOpen())
                 {
                     // see if this node is in range, if yes, enable undercursor and display path.
-
-                    hit.collider.GetComponent<GridNode>().underCursor = true;
-                    if (movementTargetNode != hit.collider.gameObject)              // update path and target node
+                    if (IsNodeReachable_MobilityPath(false, hit.collider.transform) > 0)
                     {
-                        movementTargetNode = hit.collider.gameObject;
-                        GetPathToTarget();
-                        DrawMobilityPath();
+
+                        hit.collider.GetComponent<GridNode>().underCursor = true;
+                        if (movementTargetNode != hit.collider.gameObject)              // update path and target node
+                        {
+                            movementTargetNode = hit.collider.gameObject;
+                            GetPathToTarget();
+                        }
+                        else
+                        {
+                            // nothing ,still aiming at the same node. Make sure to reset while cycling.
+                        }
+                        validTarget = true;
                     }
                     else
                     {
-                        // nothing ,still aiming at the same node. Make sure to reset while cycling.
+                        PathDrawingRef.GetComponent<LineRenderer>().positionCount = 0;
+                        validTarget = false;
                     }
-                    validTarget = true;
                 }
                 else
                 {
@@ -220,18 +227,29 @@ public class GameplayLoop : MonoBehaviour
     /// A temporary function to see what path is taken by the mobility path finder function. (ignores all closed nodes)
     /// </summary>
     public Transform mobilityPathDrawerRef;
-    void DrawMobilityPath()
+    int IsNodeReachable_MobilityPath(bool display, Transform endNode)
     {
-        List<Transform> mobilityPath = PathfinderRef.Pathfind_Walkable(movementStartNode,movementTargetNode,10);
+        List<Transform> mobilityPath = PathfinderRef.Pathfind_Walkable(movementStartNode,endNode.gameObject);
         // draw this
         LineRenderer mobilityLineRenderer= mobilityPathDrawerRef.GetComponent<LineRenderer>();
-        mobilityLineRenderer.positionCount = 0;
 
-        mobilityLineRenderer.positionCount = mobilityPath.Count;
-        for (int i = 0; i < mobilityPath.Count; i++)
+        if (display)      // for debug purposes.
         {
-            mobilityLineRenderer.SetPosition(i, mobilityPath[i].position);
+            mobilityLineRenderer.positionCount = 0;
+            mobilityLineRenderer.positionCount = mobilityPath.Count;
+            for (int i = 0; i < mobilityPath.Count; i++)
+            {
+                mobilityLineRenderer.SetPosition(i, mobilityPath[i].position);
+            }
         }
+
+
+        //Calculate if can go here based on obstacle nos and mobility.
+        if (PlayerUnit_ScriptRef[curUnitSelectedIndex].GetMobility() < mobilityPath.Count)
+            return 0;
+        else
+            return 2;
+
 
     }
 

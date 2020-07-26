@@ -157,7 +157,7 @@ public class GridPathfinding : MonoBehaviour
     /// <param name="actionsLeft">No. of actions the character has left.</param>
     /// <returns>Returns int: 0 = not reacheable, 1 = costs 1 action, 2=costs 2 action (Dash).</returns>
     //public int Pathfind_Walkable(GameObject start, GameObject end, int mobility)
-    public List<Transform> Pathfind_Walkable(GameObject start, GameObject end, int mobility)
+    public List<Transform> Pathfind_Walkable(GameObject start, GameObject end)
     {
         StartNode = start;
         EndNode = end;
