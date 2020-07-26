@@ -38,7 +38,6 @@ public class GridCreator : MonoBehaviour
         CreateGridStructure();
         InitializeNodeNeighbors();
         SpawnCovers();
-        //CloseRandomNodes(55);
     }
 
   /// <summary>

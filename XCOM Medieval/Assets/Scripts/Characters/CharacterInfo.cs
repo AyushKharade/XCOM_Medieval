@@ -24,6 +24,7 @@ public class CharacterInfo : ScriptableObject
     [Range(0, 1f)] public float will;
     public string characterName;
     public string callSign;
+    public float moveSpeed;
 
     [Header("Resistances")]
     [Range(0, 1f)] public float meleeResistance;

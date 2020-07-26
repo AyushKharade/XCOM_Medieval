@@ -18,6 +18,7 @@ MonoBehaviour:
   aim: 0.732
   will: 0.655
   characterName: Jeff
-  callSign: Chlorine
+  callSign: Hogwash
+  moveSpeed: 4.5
   meleeResistance: 0.486
   dodge: 0.12

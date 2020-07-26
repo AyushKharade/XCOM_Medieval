@@ -19,5 +19,6 @@ MonoBehaviour:
   will: 0.824
   characterName: Erika
   callSign: Hornet
+  moveSpeed: 4.2
   meleeResistance: 0
   dodge: 0.232

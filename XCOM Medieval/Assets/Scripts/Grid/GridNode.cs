@@ -57,6 +57,20 @@ public class GridNode : MonoBehaviour
         underCursor = false;
     }
 
+    /// <summary>
+    /// Sees if give node is adjacent to current node (for restricting diagonal things like movement in certain situations.
+    /// </summary>
+    /// <param name="node">The node to test</param>
+    /// <returns>true if node is adjacent, false otherwise.</returns>
+    public bool IsNodeAdjacent(Transform node)
+    {
+        float angle = Vector3.Angle(transform.forward, (node.position - transform.position));
+        if (angle == 0 || angle == 90 || angle == 180 || angle == 270)
+            return true;
+        else
+            return false;
+    }
+
     #region Open/Close Nodes
     void CloseNode()
     {
@@ -110,13 +124,13 @@ public class GridNode : MonoBehaviour
         // Assign this cover to all adjacent neighboring nodes.
         foreach (GridNode gb in neighbours)
         {
-            if (Vector3.Distance(transform.position, gb.transform.position) == nodeSize)        // then its an adjacent
+            if (gb.nodeCover!=NodeCover.Full && gb.IsNodeOpen()                                        // only overwrite cover if its half
+                && transform.GetComponent<GridNode>().IsNodeAdjacent(gb.gameObject.transform))        // only set cover to adjacent tiles
             {
                 if (status == NodeStatus.Obstacle_Full)
                     gb.AddCoverToNode(NodeCover.Full);
                 else
                     gb.AddCoverToNode(NodeCover.Half);
-
             }
         }
     }

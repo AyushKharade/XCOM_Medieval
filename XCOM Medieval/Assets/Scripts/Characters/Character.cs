@@ -86,7 +86,7 @@ public class Character : MonoBehaviour
             else
             {
                 Vector3 moveDir = (pathToFollow[movementPathIndex].position - transform.position).normalized;
-                transform.parent.Translate(moveDir * 4.5f * Time.deltaTime);
+                transform.parent.Translate(moveDir * characterProfile.moveSpeed * Time.deltaTime);
                 OrientCharacter(moveDir);
             }
         }
