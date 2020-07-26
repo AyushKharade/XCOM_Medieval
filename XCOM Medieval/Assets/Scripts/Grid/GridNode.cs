@@ -13,6 +13,7 @@ public class GridNode : MonoBehaviour
     [Header("Node Information")]
     public NodeStatus nodeState = new NodeStatus();
     public NodeCover nodeCover = new NodeCover();
+    [HideInInspector]public bool alwaysVisible;
 
     // list of neighbours: each node has 8 neighbours: 4 perpendicular, 4 diagonal
     [Header("Node Neighbours")]
@@ -110,7 +111,7 @@ public class GridNode : MonoBehaviour
     public void ToggleNodeOccupied()
     {
         OccupyNode();
-        GetComponent<MeshRenderer>().material = occupiedColor;
+        //GetComponent<MeshRenderer>().material = occupiedColor;
     }
 
     public bool IsNodeOpen() { if (nodeState == NodeStatus.Open) return true; else return false; }
@@ -176,12 +177,23 @@ public class GridNode : MonoBehaviour
 
     void ResetScale()
     {
-        if(transform.localScale.x!=ogScaleXZ)
-            transform.localScale = new Vector3(ogScaleXZ, ogScaleY, ogScaleXZ);
+        if (alwaysVisible)
+        {
+            if(transform.localScale.x!=ogScaleXZ)
+                transform.localScale = new Vector3(ogScaleXZ, ogScaleY, ogScaleXZ);
+        }
+        else
+        {
+            GetComponent<MeshRenderer>().enabled = false;
+
+        }
     }
 
     public void SelectionScale()
     {
-        transform.localScale = new Vector3(ogScaleXZ + ogScaleXZ * 0.25f, ogScaleY + ogScaleY * 0.25f, ogScaleXZ + ogScaleXZ * 0.25f);
+        if(alwaysVisible)
+            transform.localScale = new Vector3(ogScaleXZ + ogScaleXZ * 0.25f, ogScaleY + ogScaleY * 0.25f, ogScaleXZ + ogScaleXZ * 0.25f);
+        else
+            GetComponent<MeshRenderer>().enabled = true;
     }
 }

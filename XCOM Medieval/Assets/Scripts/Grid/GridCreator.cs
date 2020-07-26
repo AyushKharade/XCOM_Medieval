@@ -11,6 +11,7 @@ public class GridCreator : MonoBehaviour
     [Header("Grid Parameters")]
     public int horizontalSize_Z=14;      // how many nodes down the z-axis ---> HAS TO BE ODD NUMBER.
     public int verticalSize_X=10;        // how many nodes down the x-axis
+    public bool alwaysVisibleNodes;
 
     public int highCovers;  // no of covers to spawn in the map.
     public int lowCovers;   
@@ -62,6 +63,7 @@ public class GridCreator : MonoBehaviour
                 if (starting_X_Pos != 0f || true)
                 {
                     gb = Instantiate(NodeOBJ, new Vector3(starting_X_Pos, nodeY_Pos, starting_Z_Pos), Quaternion.identity, NodeParent);
+                    gb.GetComponent<GridNode>().alwaysVisible = alwaysVisibleNodes;
                     gb.name = "GridNode" + nameCount;
                     nameCount++;
                 }
