@@ -255,17 +255,21 @@ public class GameplayLoop : MonoBehaviour
                 obstacleRatingf += 0.25f;
         }
 
+        int moveCost;
 
         int range = PlayerUnit_ScriptRef[curUnitSelectedIndex].GetMobility() - (int)(obstacleRatingf);
         if (range < mobilityPath.Count)
-            return 0;
+            moveCost=0;
         else if ((range / 2) < mobilityPath.Count)
-            return 1;
+            moveCost=2;
         else if (PlayerUnit_ScriptRef[curUnitSelectedIndex].availableActions == 2)
-            return 2;
+            moveCost=1;
         else
-            return 0;
+            moveCost = 0;
 
+        endNode.GetComponent<GridNode>().UpdateNodeUI(moveCost);
+
+        return moveCost;
 
     }
 

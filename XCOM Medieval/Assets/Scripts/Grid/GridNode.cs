@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// class to represent an individual node in the grid based world for this game. Saves neighbours, states (blocked / free), cover states, etc.
@@ -32,6 +33,11 @@ public class GridNode : MonoBehaviour
     public GameObject Parent;
 
     public float nodeSize;
+
+    [Header("Node Info UI")]
+    public Text moveCostUI;
+    public Text coverInfoUI;
+    public GameObject nodeUI_Parent;
 
     // for resetting scale
     float ogScaleXZ;
@@ -183,10 +189,8 @@ public class GridNode : MonoBehaviour
                 transform.localScale = new Vector3(ogScaleXZ, ogScaleY, ogScaleXZ);
         }
         else
-        {
             GetComponent<MeshRenderer>().enabled = false;
-
-        }
+        nodeUI_Parent.SetActive(false);
     }
 
     public void SelectionScale()
@@ -195,5 +199,26 @@ public class GridNode : MonoBehaviour
             transform.localScale = new Vector3(ogScaleXZ + ogScaleXZ * 0.25f, ogScaleY + ogScaleY * 0.25f, ogScaleXZ + ogScaleXZ * 0.25f);
         else
             GetComponent<MeshRenderer>().enabled = true;
+
+        nodeUI_Parent.SetActive(true);
+    }
+
+
+
+    public void UpdateNodeUI(int cost)
+    {
+        moveCostUI.enabled = true;
+        coverInfoUI.enabled = true;
+
+        if (cost == 0)
+        {
+            moveCostUI.text = "Unreachable.";
+            coverInfoUI.enabled = false;
+        }
+        else
+        {
+            moveCostUI.text = "Cost: "+cost;
+            coverInfoUI.text = "Cover: " + nodeCover;
+        }
     }
 }
