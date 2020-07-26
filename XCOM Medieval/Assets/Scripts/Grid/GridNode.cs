@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class GridNode : MonoBehaviour
 {
-    public enum NodeStatus { Open, Closed, Obstacle};            // all neighbours of a obstacle node (on object gives cover to all neighboring nodes). .
+    public enum NodeStatus { Open, Closed, Obstacle_Full, Obstacle_Half};            // all neighbours of a obstacle node (on object gives cover to all neighboring nodes). .
                                                                  // closed node means, there is an unit standing on it.
     public enum NodeCover { Full, Half, None};         // 40%, 20%, 0% defense bonuses respectively.
     [Header("Node Information")]
@@ -78,6 +78,10 @@ public class GridNode : MonoBehaviour
         GetComponent<MeshRenderer>().material = defaultColor;
     }
 
+
+   
+
+    // Flips node status between Open and closed.
     public void ToggleNode()
     {
         if (nodeState == NodeStatus.Open)
@@ -86,6 +90,9 @@ public class GridNode : MonoBehaviour
             OpenNode();
     }
 
+    /// <summary>
+    /// Sets that this node is closed with someone standing on it.
+    /// </summary>
     public void ToggleNodeOccupied()
     {
         OccupyNode();
@@ -94,6 +101,54 @@ public class GridNode : MonoBehaviour
 
     public bool IsNodeOpen() { if (nodeState == NodeStatus.Open) return true; else return false; }
     #endregion
+
+    #region Obstacle adding & removing.
+
+    public void AddObstacleToNode(NodeStatus status)
+    {
+        nodeState = status;
+        // Assign this cover to all adjacent neighboring nodes.
+        foreach (GridNode gb in neighbours)
+        {
+            if (Vector3.Distance(transform.position, gb.transform.position) == nodeSize)        // then its an adjacent
+            {
+                if (status == NodeStatus.Obstacle_Full)
+                    gb.AddCoverToNode(NodeCover.Full);
+                else
+                    gb.AddCoverToNode(NodeCover.Half);
+
+            }
+        }
+    }
+
+
+    public void AddCoverToNode(NodeCover cover)
+    {
+        nodeCover = cover;
+    }
+
+    public void RemoveCover()
+    {
+        nodeCover = NodeCover.None;
+    }
+
+    /// <summary>
+    /// If it was full cover, not its half, if its half, its now none. Cover can be destroyed by certain things (if thats a feature)
+    /// </summary>
+    public void CollapseCover()
+    {
+        if (nodeCover == NodeCover.Full)
+            nodeCover = NodeCover.Half;
+        else
+            nodeCover = NodeCover.None;
+    }
+
+
+    #endregion
+
+
+
+
 
     public void InitFCost(Transform start, Transform end)
     {

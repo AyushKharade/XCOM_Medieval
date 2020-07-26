@@ -12,8 +12,16 @@ public class GridCreator : MonoBehaviour
     public int horizontalSize_Z=14;      // how many nodes down the z-axis ---> HAS TO BE ODD NUMBER.
     public int verticalSize_X=10;        // how many nodes down the x-axis
 
+    public int highCovers;  // no of covers to spawn in the map.
+    public int lowCovers;   
+
     public GameObject NodeOBJ;
     public Transform NodeParent;
+    public Transform ObstacleParent;
+
+    [Header("Obstacle Prefabs")]
+    public GameObject Obscable_Full_Cover;
+    public GameObject Obscable_Half_Cover;
 
     void Start()
     {
@@ -29,7 +37,8 @@ public class GridCreator : MonoBehaviour
 
         CreateGridStructure();
         InitializeNodeNeighbors();
-        CloseRandomNodes(55);
+        SpawnCovers();
+        //CloseRandomNodes(55);
     }
 
   /// <summary>
@@ -109,5 +118,37 @@ public class GridCreator : MonoBehaviour
             else
                 i--;
         }
+    }
+
+
+    void SpawnCovers()
+    {
+        GameObject coverObj;
+        // full covers
+        for (int i = 0; i < highCovers; i++)
+        {
+            int r = Random.Range(0, NodeParent.childCount);
+            if (NodeParent.GetChild(r).GetComponent<GridNode>().IsNodeOpen())
+            {
+                coverObj = Instantiate(Obscable_Full_Cover,NodeParent.GetChild(r).position,Quaternion.identity,ObstacleParent);
+                NodeParent.GetChild(r).GetComponent<GridNode>().AddObstacleToNode(GridNode.NodeStatus.Obstacle_Full);
+            }
+            else
+                i--;
+        }
+
+        //half covers
+        for (int i = 0; i <lowCovers; i++)
+        {
+            int r = Random.Range(0, NodeParent.childCount);
+            if (NodeParent.GetChild(r).GetComponent<GridNode>().IsNodeOpen())
+            {
+                coverObj = Instantiate(Obscable_Half_Cover, NodeParent.GetChild(r).position, Quaternion.identity, ObstacleParent);
+                NodeParent.GetChild(r).GetComponent<GridNode>().AddObstacleToNode(GridNode.NodeStatus.Obstacle_Half);
+            }
+            else
+                i--;
+        }
+
     }
 }

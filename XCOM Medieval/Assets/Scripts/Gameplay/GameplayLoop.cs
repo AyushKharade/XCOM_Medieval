@@ -202,7 +202,6 @@ public class GameplayLoop : MonoBehaviour
         controlLock = true;
         //cameraRef.GetComponent<MainCameraScript>().freeCam = false;
         cameraRef.GetComponent<MainCameraScript>().ResetCamOnTarget();
-        ResetDrawnPath();
 
         // set character's destination so they will move.
         PlayerUnit_ScriptRef[curUnitSelectedIndex].MoveUnitToNewLocation(movementTargetNode,path);
@@ -211,6 +210,8 @@ public class GameplayLoop : MonoBehaviour
     public void UnitReachedDestination()
     {
         controlLock = false;
+        ResetDrawnPath();
+
     }
 
     #endregion
