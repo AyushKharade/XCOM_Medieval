@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UnitClass: 2
   health: 5
-  mobility: 16
+  mobility: 13
   aim: 0.69
   will: 0.824
   characterName: Erika

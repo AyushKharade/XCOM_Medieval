@@ -245,10 +245,26 @@ public class GameplayLoop : MonoBehaviour
 
 
         //Calculate if can go here based on obstacle nos and mobility.
-        if (PlayerUnit_ScriptRef[curUnitSelectedIndex].GetMobility() < mobilityPath.Count)
+        // obstacle rating, -1 for full obstacle, - 0.5 for half cover.
+        float obstacleRatingf = 0f;
+        foreach (Transform t in mobilityPath)
+        {
+            if (t.GetComponent<GridNode>().nodeCover == GridNode.NodeCover.Full)
+                obstacleRatingf += 0.75f;
+            else if (t.GetComponent<GridNode>().nodeCover == GridNode.NodeCover.Half)
+                obstacleRatingf += 0.25f;
+        }
+
+
+        int range = PlayerUnit_ScriptRef[curUnitSelectedIndex].GetMobility() - (int)(obstacleRatingf);
+        if (range < mobilityPath.Count)
             return 0;
-        else
+        else if ((range / 2) < mobilityPath.Count)
+            return 1;
+        else if (PlayerUnit_ScriptRef[curUnitSelectedIndex].availableActions == 2)
             return 2;
+        else
+            return 0;
 
 
     }

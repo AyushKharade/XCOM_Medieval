@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UnitClass: 0
   health: 8
-  mobility: 14
+  mobility: 10
   aim: 0.732
   will: 0.655
   characterName: Allenran

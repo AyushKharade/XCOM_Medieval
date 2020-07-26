@@ -522,7 +522,7 @@ MonoBehaviour:
   PlayerPod_Spawn: {fileID: 2028636129}
   GameplayCamera: {fileID: 963194228}
   PathfindingParent: {fileID: 1964066589}
-  mobilityPathDrawerRef: {fileID: 0}
+  mobilityPathDrawerRef: {fileID: 1914179351}
 --- !u!4 &969188346
 Transform:
   m_ObjectHideFlags: 0
@@ -928,8 +928,8 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.224
-        value: 0.4380952
+        time: 0.26400092
+        value: 0.83809674
         inSlope: 0
         outSlope: 0
         tangentMode: 0
