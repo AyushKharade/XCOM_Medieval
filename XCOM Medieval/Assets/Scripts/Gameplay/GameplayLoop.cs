@@ -229,6 +229,9 @@ public class GameplayLoop : MonoBehaviour
     public Transform mobilityPathDrawerRef;
     int IsNodeReachable_MobilityPath(bool display, Transform endNode)
     {
+        if (Vector3.Distance(endNode.position, movementStartNode.transform.position) > NodesParentRef.GetChild(0).localScale.x * 15)
+            return 0;
+
         List<Transform> mobilityPath = PathfinderRef.Pathfind_Walkable(movementStartNode,endNode.gameObject);
         // draw this
         LineRenderer mobilityLineRenderer= mobilityPathDrawerRef.GetComponent<LineRenderer>();
