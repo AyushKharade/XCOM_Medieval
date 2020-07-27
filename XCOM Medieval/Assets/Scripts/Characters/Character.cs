@@ -52,6 +52,7 @@ public class Character : MonoBehaviour
         UpdateHP_UI();
 
         availableActions = 2;
+        actionsUI.text = "" + availableActions;
 
         camDirRef = Camera.main.transform.position;
         currentControlUI.enabled = false;

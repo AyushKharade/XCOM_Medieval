@@ -126,6 +126,9 @@ public class GameplayLoop : MonoBehaviour
             if (validTarget && Input.GetMouseButtonDown(1))
             {
                 TravelToTarget();
+                PlayerUnit_ScriptRef[curUnitSelectedIndex].DeductActions(movementActionCost);
+                
+                //if(PlayerUnit_ScriptRef)
             }
         }
     }
@@ -134,6 +137,7 @@ public class GameplayLoop : MonoBehaviour
     /// If where player is aiming with mouse is a valid target where the current unit can move.
     /// </summary>
     bool validTarget;
+    int movementActionCost;
     void RaycastMovement()
     {
         RaycastHit hit;
@@ -146,7 +150,9 @@ public class GameplayLoop : MonoBehaviour
                 if (hit.collider.GetComponent<GridNode>().IsNodeOpen())
                 {
                     // see if this node is in range, if yes, enable undercursor and display path.
-                    if (IsNodeReachable_MobilityPath(false, hit.collider.transform) > 0)
+                    int actionCost = IsNodeReachable_MobilityPath(false, hit.collider.transform, PlayerUnit_ScriptRef[curUnitSelectedIndex].availableActions);
+                    movementActionCost = actionCost;
+                    if ( actionCost> 0 && actionCost <= PlayerUnit_ScriptRef[curUnitSelectedIndex].availableActions)
                     {
 
                         hit.collider.GetComponent<GridNode>().underCursor = true;
@@ -227,14 +233,14 @@ public class GameplayLoop : MonoBehaviour
     /// A temporary function to see what path is taken by the mobility path finder function. (ignores all closed nodes)
     /// </summary>
     public Transform mobilityPathDrawerRef;
-    int IsNodeReachable_MobilityPath(bool display, Transform endNode)
+    int IsNodeReachable_MobilityPath(bool display, Transform endNode, int actionsLeft)
     {
-        if (Vector3.Distance(endNode.position, movementStartNode.transform.position) > NodesParentRef.GetChild(0).localScale.x * 15)
-            return 0;
+        //if (Vector3.Distance(endNode.position, movementStartNode.transform.position) > NodesParentRef.GetChild(0).localScale.x * 15)
+        //    return 0;
 
-        List<Transform> mobilityPath = PathfinderRef.Pathfind_Walkable(movementStartNode,endNode.gameObject);
+        List<Transform> mobilityPath = PathfinderRef.Pathfind_Walkable(movementStartNode, endNode.gameObject);
         // draw this
-        LineRenderer mobilityLineRenderer= mobilityPathDrawerRef.GetComponent<LineRenderer>();
+        LineRenderer mobilityLineRenderer = mobilityPathDrawerRef.GetComponent<LineRenderer>();
 
         if (display)      // for debug purposes.
         {
@@ -250,15 +256,15 @@ public class GameplayLoop : MonoBehaviour
         //Calculate if can go here based on obstacle nos and mobility.
         // obstacle rating, -1 for full obstacle, - 0.5 for half cover.
         float obstacleRatingf = 0f;
-        
+
         foreach (Transform t in mobilityPath)
         {
-            if (t.GetComponent<GridNode>().nodeState==GridNode.NodeStatus.Obstacle_Full)
+            if (t.GetComponent<GridNode>().nodeState == GridNode.NodeStatus.Obstacle_Full)
                 obstacleRatingf += 0.9f;
-            else if (t.GetComponent<GridNode>().nodeState==GridNode.NodeStatus.Obstacle_Half)
+            else if (t.GetComponent<GridNode>().nodeState == GridNode.NodeStatus.Obstacle_Half)
                 obstacleRatingf += 0.35f;
         }
-        
+
         //Debug.Log("Mobility path method has been commented");
 
         int moveCost;
@@ -266,18 +272,21 @@ public class GameplayLoop : MonoBehaviour
         int range = PlayerUnit_ScriptRef[curUnitSelectedIndex].GetMobility() - (int)(obstacleRatingf);
 
         if (range < mobilityPath.Count)
-            moveCost=0;
-        else if ((range / 2) < mobilityPath.Count)
-            moveCost=2;
-        else if (PlayerUnit_ScriptRef[curUnitSelectedIndex].availableActions == 2)
-            moveCost=1;
-        else
             moveCost = 0;
+        else if ((range / 2) < mobilityPath.Count)
+            moveCost = 2;
+        //else if (PlayerUnit_ScriptRef[curUnitSelectedIndex].availableActions == 2)
+        else 
+            moveCost = 1;
+        //else
+         //   moveCost = 0;
 
         endNode.GetComponent<GridNode>().UpdateNodeUI(moveCost);
 
-        return moveCost;
+        if (actionsLeft < moveCost)
+            Debug.Log("Not enough actions left: Need " + moveCost + " has " + actionsLeft);
 
+        return moveCost;
     }
 
     #endregion
@@ -314,6 +323,13 @@ public class GameplayLoop : MonoBehaviour
 
     }
 
+
+
+    /// <summary>
+    /// Finds empty nodes around the player starting pod to spawn player units.
+    /// </summary>
+    /// <param name="noOfPlayers"></param>
+    /// <returns>List of free nodes, length of list = noOfPlayers</returns>
     List<GameObject> FindPlayerPodNodes(int noOfPlayers)
     {
         List<GameObject> emptySpawnNodes = new List<GameObject>();
