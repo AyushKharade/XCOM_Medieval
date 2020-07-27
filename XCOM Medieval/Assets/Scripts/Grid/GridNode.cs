@@ -222,7 +222,7 @@ public class GridNode : MonoBehaviour
     {
         gCost = Vector3.Distance(start.position, transform.position);
         hCost = Vector3.Distance(end.position, transform.position);
-        fCost = gCost + fCost;
+        fCost = gCost + hCost;
     }
 
     public float GetFCost()

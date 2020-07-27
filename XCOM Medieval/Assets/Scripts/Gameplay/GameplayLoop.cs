@@ -247,16 +247,16 @@ public class GameplayLoop : MonoBehaviour
         //Calculate if can go here based on obstacle nos and mobility.
         // obstacle rating, -1 for full obstacle, - 0.5 for half cover.
         float obstacleRatingf = 0f;
-        /*
+        
         foreach (Transform t in mobilityPath)
         {
-            if (t.GetComponent<GridNode>().nodeCover == GridNode.NodeCover.Full)
-                obstacleRatingf += 0.75f;
-            else if (t.GetComponent<GridNode>().nodeCover == GridNode.NodeCover.Half)
-                obstacleRatingf += 0.25f;
+            if (t.GetComponent<GridNode>().nodeState==GridNode.NodeStatus.Obstacle_Full)
+                obstacleRatingf += 0.9f;
+            else if (t.GetComponent<GridNode>().nodeState==GridNode.NodeStatus.Obstacle_Half)
+                obstacleRatingf += 0.35f;
         }
-        */
-        Debug.Log("Mobility path method has been commented");
+        
+        //Debug.Log("Mobility path method has been commented");
 
         int moveCost;
 
@@ -304,7 +304,6 @@ public class GameplayLoop : MonoBehaviour
         }
 
         GameplayCamera.GetComponent<MainCameraScript>().SetTarget(PlayerUnitList[0].transform, true);
-        //PlayerUnitList[0].transform.GetChild(0).GetComponent<Character>().ToggleControlUI();
         PlayerUnit_ScriptRef[0].ToggleControlUI();
         curUnitSelectedIndex = 0;
 
