@@ -14,8 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UnitClass: 0
   health: 6
+  mobility: 10
   aim: 0.697
   will: 0.606
   characterName: William
+  callSign: Ramsdale
+  moveSpeed: 4.5
   meleeResistance: 0.486
   dodge: 0.12
