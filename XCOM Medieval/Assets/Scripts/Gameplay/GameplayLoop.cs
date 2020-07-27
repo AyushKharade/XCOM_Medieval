@@ -247,6 +247,7 @@ public class GameplayLoop : MonoBehaviour
         //Calculate if can go here based on obstacle nos and mobility.
         // obstacle rating, -1 for full obstacle, - 0.5 for half cover.
         float obstacleRatingf = 0f;
+        /*
         foreach (Transform t in mobilityPath)
         {
             if (t.GetComponent<GridNode>().nodeCover == GridNode.NodeCover.Full)
@@ -254,10 +255,13 @@ public class GameplayLoop : MonoBehaviour
             else if (t.GetComponent<GridNode>().nodeCover == GridNode.NodeCover.Half)
                 obstacleRatingf += 0.25f;
         }
+        */
+        Debug.Log("Mobility path method has been commented");
 
         int moveCost;
 
         int range = PlayerUnit_ScriptRef[curUnitSelectedIndex].GetMobility() - (int)(obstacleRatingf);
+
         if (range < mobilityPath.Count)
             moveCost=0;
         else if ((range / 2) < mobilityPath.Count)

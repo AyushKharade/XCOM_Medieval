@@ -13,7 +13,15 @@ public class GridNode : MonoBehaviour
     public enum NodeCover { Full, Half, None};         // 40%, 20%, 0% defense bonuses respectively.
     [Header("Node Information")]
     public NodeStatus nodeState = new NodeStatus();
-    public NodeCover nodeCover = new NodeCover();
+
+    //covers
+    public NodeCover nodeCoverFront = new NodeCover();         // down the z axis of the node
+    public NodeCover nodeCoverBack = new NodeCover();          // -z
+    public NodeCover nodeCoverLeft = new NodeCover();          // -x
+    public NodeCover nodeCoverRight = new NodeCover();         // +x
+
+
+
     [HideInInspector]public bool alwaysVisible;
 
     // list of neighbours: each node has 8 neighbours: 4 perpendicular, 4 diagonal
@@ -72,10 +80,15 @@ public class GridNode : MonoBehaviour
     public bool IsNodeAdjacent(Transform node)
     {
         float angle = Vector3.Angle(transform.forward, (node.position - transform.position));
-        if (angle == 0 || angle == 90 || angle == 180 || angle == 270)
+        if (angle == 0 || angle == 90 || angle == 180)
             return true;
         else
             return false;
+    }
+
+    public float AngleBetweenNodes(Transform node)
+    {
+        return Vector3.Angle(transform.forward, (node.position - transform.position));
     }
 
     #region Open/Close Nodes
@@ -125,12 +138,52 @@ public class GridNode : MonoBehaviour
 
     #region Obstacle adding & removing.
 
+    /// <summary>
+    /// This method will assign cover status to neighboring adjacent nodes depending on where they are. Each node has 4 covers in 4 directions
+    /// this function will assign the correct cover based on the angle & position.
+    /// </summary>
+    /// <param name="status"></param>
     public void AddObstacleToNode(NodeStatus status)
     {
         nodeState = status;
+        NodeCover cover = new NodeCover();
+        if (status == NodeStatus.Obstacle_Full)
+            cover = NodeCover.Full;
+        else
+            cover = NodeCover.Half;
+
         // Assign this cover to all adjacent neighboring nodes.
         foreach (GridNode gb in neighbours)
         {
+            // depending upon angle, assign cover
+            if (GetComponent<GridNode>().IsNodeAdjacent(gb.transform))
+            {
+                // now we know its adjacent.
+                if (AngleBetweenNodes(gb.transform) == 90)       // means either left or right
+                {
+                    if ((gb.transform.position.x - transform.position.x) > 0 && gb.nodeCoverLeft!=NodeCover.Full)
+                        gb.nodeCoverLeft = cover;
+                    else if(gb.nodeCoverRight!= NodeCover.Full)
+                        gb.nodeCoverRight = cover;
+                }
+                else // == 0, its front or back.
+                {
+                    if ((gb.transform.position.z - transform.position.z) < 0 && gb.nodeCoverFront != NodeCover.Full)        // means its forward.
+                        gb.nodeCoverFront = cover;
+                    else if(gb.nodeCoverBack != NodeCover.Full)
+                        gb.nodeCoverBack = cover;
+                }
+
+            }
+
+
+
+
+
+
+
+            // old
+            /*
             if (gb.nodeCover!=NodeCover.Full && gb.IsNodeOpen()                                        // only overwrite cover if its half
                 && transform.GetComponent<GridNode>().IsNodeAdjacent(gb.gameObject.transform))        // only set cover to adjacent tiles
             {
@@ -139,29 +192,18 @@ public class GridNode : MonoBehaviour
                 else
                     gb.AddCoverToNode(NodeCover.Half);
             }
+            */
         }
     }
 
-
-    public void AddCoverToNode(NodeCover cover)
-    {
-        nodeCover = cover;
-    }
-
-    public void RemoveCover()
-    {
-        nodeCover = NodeCover.None;
-    }
+    
 
     /// <summary>
     /// If it was full cover, not its half, if its half, its now none. Cover can be destroyed by certain things (if thats a feature)
     /// </summary>
     public void CollapseCover()
     {
-        if (nodeCover == NodeCover.Full)
-            nodeCover = NodeCover.Half;
-        else
-            nodeCover = NodeCover.None;
+        
     }
 
 
@@ -181,6 +223,11 @@ public class GridNode : MonoBehaviour
     public float GetFCost()
     { return fCost; }
 
+
+    #region Node selection highlight
+    /// <summary>
+    /// Removes highlight from a node when it is no longer being pointed at.
+    /// </summary>
     void ResetScale()
     {
         if (alwaysVisible)
@@ -193,6 +240,9 @@ public class GridNode : MonoBehaviour
         nodeUI_Parent.SetActive(false);
     }
 
+    /// <summary>
+    /// Highlights currently selected node.
+    /// </summary>
     public void SelectionScale()
     {
         if(alwaysVisible)
@@ -202,7 +252,7 @@ public class GridNode : MonoBehaviour
 
         nodeUI_Parent.SetActive(true);
     }
-
+    #endregion
 
 
     public void UpdateNodeUI(int cost)
@@ -218,7 +268,7 @@ public class GridNode : MonoBehaviour
         else
         {
             moveCostUI.text = "Cost: "+cost;
-            coverInfoUI.text = "Cover: " + nodeCover;
+            //coverInfoUI.text = "Cover: " + nodeCover;
         }
     }
 }

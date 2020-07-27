@@ -107,7 +107,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodeState: 0
-  nodeCover: 2
+  nodeCoverFront: 2
+  nodeCoverBack: 2
+  nodeCoverLeft: 2
+  nodeCoverRight: 2
   alwaysVisible: 0
   neighbours: []
   defaultColor: {fileID: 2100000, guid: 0986d7a06e316294fa0112edcbd443be, type: 2}
