@@ -44,7 +44,12 @@ public class GridNode : MonoBehaviour
 
     [Header("Node Info UI")]
     public Text moveCostUI;
-    public Text coverInfoUI;
+    public Image Cover_Front_UI;
+    public Image Cover_Back_UI;
+    public Image Cover_Left_UI;
+    public Image Cover_Right_UI;
+    public Sprite FullCover_UI_Image;
+    public Sprite HalfCover_UI_Image;
     public GameObject nodeUI_Parent;
 
     // for resetting scale
@@ -258,17 +263,49 @@ public class GridNode : MonoBehaviour
     public void UpdateNodeUI(int cost)
     {
         moveCostUI.enabled = true;
-        coverInfoUI.enabled = true;
+        Cover_Front_UI.enabled = true;
+        Cover_Back_UI.enabled = true;
+        Cover_Left_UI.enabled = true;
+        Cover_Right_UI.enabled = true;
 
-        if (cost == 0)
-        {
-            moveCostUI.text = "Unreachable.";
-            coverInfoUI.enabled = false;
-        }
-        else
+        if (cost > 0)
         {
             moveCostUI.text = "Cost: "+cost;
-            //coverInfoUI.text = "Cover: " + nodeCover;
+
+            #region cover ui updates
+            // Front
+            if (nodeCoverFront == NodeCover.Full)
+                Cover_Front_UI.sprite = FullCover_UI_Image;
+            else if (nodeCoverFront == NodeCover.Half)
+                Cover_Front_UI.sprite = HalfCover_UI_Image;
+            else
+                Cover_Front_UI.enabled = false;
+
+            // back
+            if (nodeCoverBack == NodeCover.Full)
+                Cover_Back_UI.sprite = FullCover_UI_Image;
+            else if (nodeCoverBack == NodeCover.Half)
+                Cover_Back_UI.sprite = HalfCover_UI_Image;
+            else
+                Cover_Back_UI.enabled = false;
+
+            // left
+            if (nodeCoverLeft == NodeCover.Full)
+                Cover_Left_UI.sprite = FullCover_UI_Image;
+            else if (nodeCoverLeft == NodeCover.Half)
+                Cover_Left_UI.sprite = HalfCover_UI_Image;
+            else
+                Cover_Left_UI.enabled = false;
+
+            // right
+            if (nodeCoverRight == NodeCover.Full)
+                Cover_Right_UI.sprite = FullCover_UI_Image;
+            else if (nodeCoverRight == NodeCover.Half)
+                Cover_Right_UI.sprite = HalfCover_UI_Image;
+            else
+                Cover_Right_UI.enabled = false;
+            #endregion
+
         }
     }
 }

@@ -36,7 +36,7 @@ public class GridPathfinding : MonoBehaviour
             {
                 foundPath = true;
                 PathList= StartPathfindingRegular(StartNode,EndNode);
-                DrawPath(50);
+                //DrawPath(50);
             }
             else
                 Debug.Log("Starting node or ending node not defined!!");
